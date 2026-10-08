@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VocabMaster: Mobile English-Russian Learn</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Support for Mobile Safe Areas (Notch & Home Indicator) */
+        .safe-padding {
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        .safe-bottom-padding {
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+
+        /* Perspective for 3D card flip */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Hide scrollbars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Active feedback touch effect */
+        .active-tap {
+            transition: transform 0.1s ease, opacity 0.1s ease;
+        }
+        .active-tap:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
+
+    <!-- Top Mobile Navigation Header -->
+    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 safe-padding !py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0">
+                <i class="fa-solid fa-store font-bold text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base text-white leading-tight">VocabMaster</h1>
+                <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Shopping & Words</p>
+            </div>
+        </div>
+
+        <!-- Filter Dropdown Header Action -->
+        <div class="relative">
+            <select id="category-filter" onchange="app.changeCategory(this.value)" class="bg-slate-800 text-xs text-slate-200 font-semibold border border-slate-700 rounded-xl pl-3 pr-8 py-2.5 appearance-none focus:outline-none focus:border-blue-500 min-h-[44px]">
+                <option value="All">All Words (38)</option>
+                <option value="Shops & Places">Shops (24)</option>
+                <option value="Shopping Terms">Terms (9)</option>
+                <option value="Other Words">Other (5)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 w-full max-w-md mx-auto p-4 flex flex-col justify-center">
+
+        <!-- MODE 1: FLASHCARDS VIEW -->
+        <section id="view-flashcards" class="w-full flex flex-col items-center justify-between min-h-[68vh]">
+            <!-- Progress Indicator -->
+            <div class="w-full mb-2 flex items-center justify-between text-xs text-slate-400 font-medium">
+                <span id="fc-progress-text">Card 1 of 38</span>
+                <button onclick="app.shuffleFlashcards()" class="text-blue-400 hover:text-blue-300 flex items-center space-x-1.5 active-tap min-h-[40px] px-3 rounded-lg bg-slate-800 border border-slate-700">
+                    <i class="fa-solid fa-shuffle text-xs"></i>
+                    <span>Shuffle</span>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-slate-800 rounded-full mb-4 overflow-hidden">
+                <div id="fc-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- Interactive 3D Flip Card -->
+            <div class="w-full aspect-[4/5] max-h-[360px] perspective-1000 my-auto">
+                <div id="flashcard" onclick="app.flipCard()" class="w-full h-full relative transform-style-3d cursor-pointer rounded-3xl shadow-2xl">
+                    
+                    <!-- Front Side (English) -->
+                    <div class="absolute inset-0 w-full h-full bg-slate-800/90 rounded-3xl border border-slate-700/80 p-6 flex flex-col justify-between items-center text-center backface-hidden shadow-xl">
+                        <div class="w-full flex justify-between items-center text-slate-400">
+                            <span id="fc-category-badge" class="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-slate-700/50 text-blue-400 border border-slate-600/30">Category</span>
+                            <button onclick="event.stopPropagation(); app.speakCurrentWord()" class="w-12 h-12 rounded-full bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all active-tap">
+                                <i class="fa-solid fa-volume-high text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="my-auto px-2">
+                            <h2 id="fc-english" class="text-3xl font-extrabold text-white tracking-tight mb-2 break-words">Word</h2>
+                            <p class="text-xs text-slate-400 font-medium">English</p>
+                        </div>
+
+                        <div class="text-slate-500 text-xs flex items-center space-x-2">
+                            <i class="fa-solid fa-rotate text-xs"></i>
+                            <span>Tap card to flip</span>
+                        </div>
+                    </div>
+
+                    <!-- Back Side (Russian) -->
+                    <div class="absolute inset-0 w-full h-full bg-indigo-950/90 rounded-3xl border border-indigo-500/40 p-6 flex flex-col justify-between items-center text-center backface-hidden rotate-y-180 shadow-xl">
+                        <div class="w-full flex justify-between items-center text-slate-400">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-indigo-900/50 text-indigo-300 border border-indigo-700/50">Translation</span>
+                            <button onclick="event.stopPropagation(); app.speakCurrentWord()" class="w-12 h-12 rounded-full bg-indigo-600/20 text-indigo-300 hover:bg-indigo-600 hover:text-white flex items-center justify-center transition-all active-tap">
+                                <i class="fa-solid fa-volume-high text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="my-auto px-2">
+                            <h2 id="fc-russian" class="text-2xl font-bold text-indigo-100 tracking-tight mb-2 break-words">Перевод</h2>
+                            <p class="text-xs text-indigo-300/70 font-medium">Russian</p>
+                        </div>
+
+                        <div class="text-slate-500 text-xs flex items-center space-x-2">
+                            <i class="fa-solid fa-rotate text-xs"></i>
+                            <span>Tap card to flip back</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls (Thumb Friendly) -->
+            <div class="w-full grid grid-cols-2 gap-3 mt-4">
+                <button onclick="app.prevCard()" class="min-h-[52px] rounded-2xl bg-slate-800 border border-slate-700 text-slate-200 font-bold flex items-center justify-center space-x-2 active-tap shadow-lg">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                    <span>Previous</span>
+                </button>
+                <button onclick="app.nextCard()" class="min-h-[52px] rounded-2xl bg-blue-600 text-white font-bold flex items-center justify-center space-x-2 active-tap shadow-lg shadow-blue-600/30">
+                    <span>Next</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- MODE 2: QUIZ VIEW -->
+        <section id="view-quiz" class="w-full flex-col items-center justify-between hidden min-h-[68vh]">
+            <!-- Top Quiz Score Header -->
+            <div class="w-full flex items-center justify-between mb-3">
+                <div class="bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl flex items-center space-x-2">
+                    <i class="fa-solid fa-fire text-amber-500 text-xs"></i>
+                    <span class="text-xs text-slate-300 font-semibold">Streak: <span id="quiz-streak" class="text-amber-400">0</span></span>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl flex items-center space-x-2">
+                    <i class="fa-solid fa-trophy text-yellow-400 text-xs"></i>
+                    <span class="text-xs text-slate-300 font-semibold">Score: <span id="quiz-score" class="text-white">0/0</span></span>
+                </div>
+            </div>
+
+            <!-- Target Question Card -->
+            <div class="w-full bg-slate-800/90 border border-slate-700 rounded-2xl p-5 text-center my-auto shadow-xl relative overflow-hidden">
+                <div class="absolute top-3 right-3">
+                    <button onclick="app.speakQuizWord()" class="w-10 h-10 rounded-full bg-slate-700/60 text-blue-400 flex items-center justify-center active-tap">
+                        <i class="fa-solid fa-volume-high text-sm"></i>
+                    </button>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Translate this word</span>
+                <h3 id="quiz-question" class="text-2xl font-extrabold text-white tracking-tight break-words">Word</h3>
+            </div>
+
+            <!-- Multiple Choice Options -->
+            <div id="quiz-options" class="w-full space-y-2.5 my-4">
+                <!-- Dynamic choices populated here -->
+            </div>
+
+            <!-- Next Button (Shown after answering) -->
+            <button id="quiz-next-btn" onclick="app.nextQuizQuestion()" class="w-full min-h-[52px] rounded-2xl bg-blue-600 text-white font-bold flex items-center justify-center space-x-2 active-tap shadow-lg shadow-blue-600/30 opacity-0 pointer-events-none transition-all">
+                <span>Next Question</span>
+                <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+        </section>
+
+        <!-- MODE 3: MATCHING GAME VIEW -->
+        <section id="view-matching" class="w-full flex-col items-center justify-between hidden min-h-[68vh]">
+            <!-- Header Status -->
+            <div class="w-full flex items-center justify-between mb-3">
+                <div class="text-xs font-semibold text-slate-400">
+                    Matches: <span id="match-count" class="text-blue-400 font-bold">0</span> / <span id="match-total">4</span>
+                </div>
+                <button onclick="app.resetMatchingGame()" class="text-xs font-semibold text-blue-400 bg-slate-800 px-3 py-2 rounded-xl border border-slate-700 active-tap min-h-[40px]">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> New Grid
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-3 text-center">Tap an English word and its Russian match to pair them up!</p>
+
+            <!-- Touch-Friendly Grid (2 columns for phones) -->
+            <div id="matching-grid" class="w-full grid grid-cols-2 gap-2.5 my-auto">
+                <!-- Cards dynamically populated here -->
+            </div>
+
+            <!-- Success Overlay State -->
+            <div id="match-success" class="hidden w-full bg-emerald-950/90 border border-emerald-500/50 rounded-2xl p-6 text-center my-auto">
+                <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-check text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-emerald-100">Round Complete!</h3>
+                <p class="text-xs text-emerald-300/80 mt-1 mb-4">You matched all word pairs in this round.</p>
+                <button onclick="app.resetMatchingGame()" class="w-full min-h-[50px] bg-emerald-600 text-white font-bold rounded-xl active-tap shadow-lg shadow-emerald-600/30">
+                    Play Next Round
+                </button>
+            </div>
+        </section>
+
+        <!-- MODE 4: DICTIONARY / WORD LIST VIEW -->
+        <section id="view-dictionary" class="w-full flex-col hidden min-h-[68vh]">
+            <!-- Search Bar -->
+            <div class="relative w-full mb-3">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="dict-search" oninput="app.filterDictionary(this.value)" placeholder="Search English or Russian..." class="w-full bg-slate-800 text-sm text-slate-200 placeholder-slate-500 pl-10 pr-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 min-h-[48px]">
+            </div>
+
+            <!-- Scrollable Word List -->
+            <div id="dict-list" class="w-full space-y-2 max-h-[54vh] overflow-y-auto pr-1 no-scrollbar">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Mobile Navigation Bar (Thumb Zone Optimized) -->
+    <nav class="sticky bottom-0 z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 safe-bottom-padding">
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
+            <button id="nav-flashcards" onclick="app.switchTab('flashcards')" class="flex flex-col items-center justify-center min-h-[48px] rounded-xl text-blue-500 font-semibold active-tap">
+                <i class="fa-solid fa-layer-group text-base mb-1"></i>
+                <span class="text-[10px] tracking-tight">Cards</span>
+            </button>
+            <button id="nav-quiz" onclick="app.switchTab('quiz')" class="flex flex-col items-center justify-center min-h-[48px] rounded-xl text-slate-400 font-semibold active-tap">
+                <i class="fa-solid fa-circle-question text-base mb-1"></i>
+                <span class="text-[10px] tracking-tight">Quiz</span>
+            </button>
+            <button id="nav-matching" onclick="app.switchTab('matching')" class="flex flex-col items-center justify-center min-h-[48px] rounded-xl text-slate-400 font-semibold active-tap">
+                <i class="fa-solid fa-puzzle-piece text-base mb-1"></i>
+                <span class="text-[10px] tracking-tight">Match</span>
+            </button>
+            <button id="nav-dictionary" onclick="app.switchTab('dictionary')" class="flex flex-col items-center justify-center min-h-[48px] rounded-xl text-slate-400 font-semibold active-tap">
+                <i class="fa-solid fa-book-open text-base mb-1"></i>
+                <span class="text-[10px] tracking-tight">List</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Full dataset of 38 vocabulary words categorized logically
+        const VOCAB_DATA = [
+            // Shops & Places
+            { id: 1, en: "baker's", ru: "пекарня", cat: "Shops & Places" },
+            { id: 2, en: "bank", ru: "банк", cat: "Shops & Places" },
+            { id: 3, en: "butcher's", ru: "мясная лавка", cat: "Shops & Places" },
+            { id: 4, en: "charity shop", ru: "благотворительный магазин", cat: "Shops & Places" },
+            { id: 5, en: "chemist's", ru: "аптека", cat: "Shops & Places" },
+            { id: 6, en: "coffee shop", ru: "кофейня", cat: "Shops & Places" },
+            { id: 7, en: "clothes shop", ru: "магазин одежды", cat: "Shops & Places" },
+            { id: 8, en: "cosmetics store", ru: "парфюмерия, магазин косметики", cat: "Shops & Places" },
+            { id: 9, en: "deli", ru: "небольшая закусочная при гастрономе деликатесов", cat: "Shops & Places" },
+            { id: 10, en: "delicatessen", ru: "деликатесы", cat: "Shops & Places" },
+            { id: 11, en: "DIY store", ru: "магазин \"сделай сам\"", cat: "Shops & Places" },
+            { id: 12, en: "estate agent", ru: "агент по недвижимости", cat: "Shops & Places" },
+            { id: 13, en: "florist's", ru: "цветочный магазин", cat: "Shops & Places" },
+            { id: 14, en: "garden centre", ru: "садовый центр", cat: "Shops & Places" },
+            { id: 15, en: "greengrocer's", ru: "овощной магазин", cat: "Shops & Places" },
+            { id: 16, en: "hairdresser's", ru: "парикмахерская", cat: "Shops & Places" },
+            { id: 17, en: "jeweller's", ru: "ювелирный магазин", cat: "Shops & Places" },
+            { id: 18, en: "launderette", ru: "прачечная", cat: "Shops & Places" },
+            { id: 19, en: "newsagent's", ru: "газетный киоск", cat: "Shops & Places" },
+            { id: 20, en: "optician's", ru: "магазин оптики", cat: "Shops & Places" },
+            { id: 21, en: "post office", ru: "почта", cat: "Shops & Places" },
+            { id: 22, en: "shoe shop", ru: "обувной", cat: "Shops & Places" },
+            { id: 23, en: "stationer's", ru: "магазин канцтоваров", cat: "Shops & Places" },
+            { id: 24, en: "takeaway", ru: "на вынос", cat: "Shops & Places" },
+            
+            // Shopping Terms
+            { id: 25, en: "bargain", ru: "выгодная покупка", cat: "Shopping Terms" },
+            { id: 26, en: "coupon", ru: "купон", cat: "Shopping Terms" },
+            { id: 27, en: "discount", ru: "скидка", cat: "Shopping Terms" },
+            { id: 28, en: "discount code", ru: "промокод", cat: "Shopping Terms" },
+            { id: 29, en: "receipt", ru: "чек, квитанция", cat: "Shopping Terms" },
+            { id: 30, en: "sale", ru: "распродажа", cat: "Shopping Terms" },
+            { id: 31, en: "special offer", ru: "специальное предложение", cat: "Shopping Terms" },
+            { id: 32, en: "price tag", ru: "ценник", cat: "Shopping Terms" },
+            { id: 33, en: "essentials", ru: "предметы первой необходимости", cat: "Shopping Terms" },
+
+            // Other Words
+            { id: 34, en: "orchid", ru: "орхидея", cat: "Other Words" },
+            { id: 35, en: "crafty", ru: "хитрый, коварный", cat: "Other Words" },
+            { id: 36, en: "have/get a haircut", ru: "сделать стрижку", cat: "Other Words" },
+            { id: 37, en: "swap", ru: "обмениваться", cat: "Other Words" },
+            { id: 38, en: "equal", ru: "равный", cat: "Other Words" }
+        ];
+
+        class VocabApp {
+            constructor() {
+                this.activeCategory = "All";
+                this.filteredWords = [...VOCAB_DATA];
+                this.activeTab = "flashcards";
+
+                // Flashcards state
+                this.fcIndex = 0;
+                this.isFlipped = false;
+
+                // Quiz state
+                this.quizCurrentWord = null;
+                this.quizScore = 0;
+                this.quizTotal = 0;
+                this.quizStreak = 0;
+                this.quizAnswered = false;
+
+                // Matching game state
+                this.selectedMatchCard = null;
+                this.matchedPairsCount = 0;
+                this.totalMatchingPairs = 4; // 4 pairs (8 cards grid for phone)
+
+                this.init();
+            }
+
+            init() {
+                this.updateCategoryWords();
+                this.renderFlashcard();
+                this.initQuiz();
+                this.resetMatchingGame();
+                this.renderDictionary();
+            }
+
+            changeCategory(cat) {
+                this.activeCategory = cat;
+                this.updateCategoryWords();
+                this.fcIndex = 0;
+                this.isFlipped = false;
+
+                // Reset flashcard visual state
+                const card = document.getElementById('flashcard');
+                card.classList.remove('rotate-y-180');
+
+                this.renderFlashcard();
+                this.initQuiz();
+                this.resetMatchingGame();
+                this.renderDictionary();
+            }
+
+            updateCategoryWords() {
+                if (this.activeCategory === "All") {
+                    this.filteredWords = [...VOCAB_DATA];
+                } else {
+                    this.filteredWords = VOCAB_DATA.filter(w => w.cat === this.activeCategory);
+                }
+            }
+
+            switchTab(tab) {
+                this.activeTab = tab;
+                const views = ['flashcards', 'quiz', 'matching', 'dictionary'];
+                
+                views.forEach(v => {
+                    const viewEl = document.getElementById(`view-${v}`);
+                    const navBtn = document.getElementById(`nav-${v}`);
+                    
+                    if (v === tab) {
+                        viewEl.classList.remove('hidden');
+                        viewEl.classList.add('flex');
+                        navBtn.classList.remove('text-slate-400');
+                        navBtn.classList.add('text-blue-500');
+                    } else {
+                        viewEl.classList.add('hidden');
+                        viewEl.classList.remove('flex');
+                        navBtn.classList.remove('text-blue-500');
+                        navBtn.classList.add('text-slate-400');
+                    }
+                });
+            }
+
+            renderFlashcard() {
+                if (this.filteredWords.length === 0) return;
+                const word = this.filteredWords[this.fcIndex];
+
+                document.getElementById('fc-english').innerText = word.en;
+                document.getElementById('fc-russian').innerText = word.ru;
+                document.getElementById('fc-category-badge').innerText = word.cat;
+
+                // Progress update
+                const current = this.fcIndex + 1;
+                const total = this.filteredWords.length;
+                document.getElementById('fc-progress-text').innerText = `Card ${current} of ${total}`;
+                document.getElementById('fc-progress-bar').style.width = `${(current / total) * 100}%`;
+            }
+
+            flipCard() {
+                const card = document.getElementById('flashcard');
+                this.isFlipped = !this.isFlipped;
+                if (this.isFlipped) {
+                    card.classList.add('rotate-y-180');
+                } else {
+                    card.classList.remove('rotate-y-180');
+                }
+            }
+
+            nextCard() {
+                const card = document.getElementById('flashcard');
+                card.classList.remove('rotate-y-180');
+                this.isFlipped = false;
+
+                setTimeout(() => {
+                    this.fcIndex = (this.fcIndex + 1) % this.filteredWords.length;
+                    this.renderFlashcard();
+                }, 150);
+            }
+
+            prevCard() {
+                const card = document.getElementById('flashcard');
+                card.classList.remove('rotate-y-180');
+                this.isFlipped = false;
+
+                setTimeout(() => {
+                    this.fcIndex = (this.fcIndex - 1 + this.filteredWords.length) % this.filteredWords.length;
+                    this.renderFlashcard();
+                }, 150);
+            }
+
+            shuffleFlashcards() {
+                for (let i = this.filteredWords.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.filteredWords[i], this.filteredWords[j]] = [this.filteredWords[j], this.filteredWords[i]];
+                }
+                this.fcIndex = 0;
+                const card = document.getElementById('flashcard');
+                card.classList.remove('rotate-y-180');
+                this.isFlipped = false;
+                this.renderFlashcard();
+            }
+
+            speakCurrentWord() {
+                const word = this.filteredWords[this.fcIndex];
+                this.speak(word.en);
+            }
+
+            speakQuizWord() {
+                if (this.quizCurrentWord) {
+                    this.speak(this.quizCurrentWord.en);
+                }
+            }
+
+            speak(text) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.9;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            initQuiz() {
+                this.quizAnswered = false;
+                const nextBtn = document.getElementById('quiz-next-btn');
+                nextBtn.classList.add('opacity-0', 'pointer-events-none');
+
+                if (this.filteredWords.length === 0) return;
+
+                // Pick random question
+                const randIdx = Math.floor(Math.random() * this.filteredWords.length);
+                this.quizCurrentWord = this.filteredWords[randIdx];
+
+                document.getElementById('quiz-question').innerText = this.quizCurrentWord.en;
+
+                // 4 options (1 correct, 3 wrong)
+                let options = [this.quizCurrentWord];
+                let distractorPool = VOCAB_DATA.filter(w => w.id !== this.quizCurrentWord.id);
+                
+                distractorPool.sort(() => 0.5 - Math.random());
+                options.push(...distractorPool.slice(0, 3));
+                options.sort(() => 0.5 - Math.random());
+
+                const container = document.getElementById('quiz-options');
+                container.innerHTML = '';
+
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-full min-h-[50px] p-3.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-left font-medium flex items-center justify-between active-tap transition-all';
+                    btn.innerHTML = `
+                        <span class="text-sm pr-2">${opt.ru}</span>
+                        <div class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs opacity-0 status-icon shrink-0">
+                            <i class="fa-solid"></i>
+                        </div>
+                    `;
+                    btn.onclick = () => this.handleQuizAnswer(btn, opt);
+                    container.appendChild(btn);
+                });
+            }
+
+            handleQuizAnswer(selectedBtn, selectedOption) {
+                if (this.quizAnswered) return;
+                this.quizAnswered = true;
+
+                this.quizTotal++;
+                const isCorrect = selectedOption.id === this.quizCurrentWord.id;
+
+                const optionsContainer = document.getElementById('quiz-options');
+                const buttons = optionsContainer.querySelectorAll('button');
+
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                });
+
+                if (isCorrect) {
+                    this.quizScore++;
+                    this.quizStreak++;
+                    selectedBtn.classList.add('bg-emerald-950/80', 'border-emerald-500', 'text-emerald-200');
+                    const icon = selectedBtn.querySelector('.status-icon');
+                    icon.classList.remove('opacity-0');
+                    icon.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
+                    icon.querySelector('i').classList.add('fa-check');
+                } else {
+                    this.quizStreak = 0;
+                    selectedBtn.classList.add('bg-rose-950/80', 'border-rose-500', 'text-rose-200');
+                    const icon = selectedBtn.querySelector('.status-icon');
+                    icon.classList.remove('opacity-0');
+                    icon.classList.add('bg-rose-500', 'text-white', 'border-rose-500');
+                    icon.querySelector('i').classList.add('fa-xmark');
+
+                    // Highlight correct option
+                    buttons.forEach(btn => {
+                        if (btn.innerText.includes(this.quizCurrentWord.ru)) {
+                            btn.classList.add('bg-emerald-950/40', 'border-emerald-500/60', 'text-emerald-300');
+                        }
+                    });
+                }
+
+                // Update UI scores
+                document.getElementById('quiz-score').innerText = `${this.quizScore}/${this.quizTotal}`;
+                document.getElementById('quiz-streak').innerText = this.quizStreak;
+
+                // Reveal Next Button
+                const nextBtn = document.getElementById('quiz-next-btn');
+                nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+            }
+
+            nextQuizQuestion() {
+                this.initQuiz();
+            }
+
+            resetMatchingGame() {
+                this.selectedMatchCard = null;
+                this.matchedPairsCount = 0;
+
+                document.getElementById('match-success').classList.add('hidden');
+                const grid = document.getElementById('matching-grid');
+                grid.classList.remove('hidden');
+                grid.innerHTML = '';
+
+                if (this.filteredWords.length < 4) {
+                    grid.innerHTML = `<p class="col-span-2 text-center text-xs text-slate-400 py-6">Not enough words in category for matching mode. Choose "All Words".</p>`;
+                    return;
+                }
+
+                // Select 4 random words
+                const pool = [...this.filteredWords].sort(() => 0.5 - Math.random()).slice(0, 4);
+                this.totalMatchingPairs = pool.length;
+
+                document.getElementById('match-count').innerText = "0";
+                document.getElementById('match-total').innerText = this.totalMatchingPairs;
+
+                // Create cards (4 English + 4 Russian)
+                let cardsData = [];
+                pool.forEach(w => {
+                    cardsData.push({ id: w.id, text: w.en, lang: 'en' });
+                    cardsData.push({ id: w.id, text: w.ru, lang: 'ru' });
+                });
+
+                // Shuffle grid cards
+                cardsData.sort(() => 0.5 - Math.random());
+
+                cardsData.forEach((card) => {
+                    const cardBtn = document.createElement('button');
+                    cardBtn.className = 'match-card min-h-[72px] p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center text-center leading-snug active-tap shadow-md';
+                    cardBtn.innerText = card.text;
+                    cardBtn.dataset.id = card.id;
+                    cardBtn.dataset.lang = card.lang;
+
+                    cardBtn.onclick = () => this.handleMatchTap(cardBtn);
+                    grid.appendChild(cardBtn);
+                });
+            }
+
+            handleMatchTap(cardBtn) {
+                if (cardBtn.classList.contains('matched') || cardBtn === this.selectedMatchCard) return;
+
+                if (!this.selectedMatchCard) {
+                    // First card selected
+                    this.selectedMatchCard = cardBtn;
+                    cardBtn.classList.add('border-blue-500', 'bg-blue-950/50', 'text-blue-200');
+                    if (cardBtn.dataset.lang === 'en') {
+                        this.speak(cardBtn.innerText);
+                    }
+                } else {
+                    // Second card selected
+                    const prevCard = this.selectedMatchCard;
+                    const isMatch = prevCard.dataset.id === cardBtn.dataset.id && prevCard.dataset.lang !== cardBtn.dataset.lang;
+
+                    if (isMatch) {
+                        // Match success
+                        prevCard.className = 'min-h-[72px] p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center justify-center text-center matched opacity-40 transition-all';
+                        cardBtn.className = 'min-h-[72px] p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center justify-center text-center matched opacity-40 transition-all';
+
+                        this.matchedPairsCount++;
+                        document.getElementById('match-count').innerText = this.matchedPairsCount;
+
+                        this.selectedMatchCard = null;
+
+                        if (this.matchedPairsCount === this.totalMatchingPairs) {
+                            setTimeout(() => {
+                                document.getElementById('matching-grid').classList.add('hidden');
+                                document.getElementById('match-success').classList.remove('hidden');
+                            }, 300);
+                        }
+                    } else {
+                        // Match failed
+                        cardBtn.classList.add('border-rose-500', 'bg-rose-950/50');
+                        prevCard.classList.remove('border-blue-500', 'bg-blue-950/50', 'text-blue-200');
+                        prevCard.classList.add('border-rose-500', 'bg-rose-950/50');
+
+                        setTimeout(() => {
+                            cardBtn.classList.remove('border-rose-500', 'bg-rose-950/50');
+                            prevCard.classList.remove('border-rose-500', 'bg-rose-950/50');
+                            this.selectedMatchCard = null;
+                        }, 400);
+                    }
+                }
+            }
+
+            renderDictionary(filterQuery = '') {
+                const list = document.getElementById('dict-list');
+                list.innerHTML = '';
+
+                let dataset = this.filteredWords;
+                if (filterQuery.trim() !== '') {
+                    const q = filterQuery.toLowerCase();
+                    dataset = dataset.filter(w => w.en.toLowerCase().includes(q) || w.ru.toLowerCase().includes(q));
+                }
+
+                if (dataset.length === 0) {
+                    list.innerHTML = `<p class="text-center text-xs text-slate-500 py-6">No words found.</p>`;
+                    return;
+                }
+
+                dataset.forEach(w => {
+                    const row = document.createElement('div');
+                    row.className = 'bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 flex items-center justify-between active-tap';
+                    row.innerHTML = `
+                        <div class="pr-2">
+                            <h4 class="text-sm font-bold text-white mb-0.5">${w.en}</h4>
+                            <p class="text-xs text-slate-400 font-medium">${w.ru}</p>
+                        </div>
+                        <button onclick="app.speak('${w.en.replace(/'/g, "\\'")}')" class="w-10 h-10 rounded-lg bg-slate-700/50 text-blue-400 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-volume-high text-xs"></i>
+                        </button>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+
+            filterDictionary(query) {
+                this.renderDictionary(query);
+            }
+        }
+
+        // Global startup
+        let app;
+        window.onload = function() {
+            app = new VocabApp();
+        };
+    </script>
+</body>
+</html>
