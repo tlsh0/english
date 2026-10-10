@@ -236,13 +236,13 @@
             <div class="w-full flex items-center justify-between mb-3">
                 <div class="bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl flex items-center space-x-2">
                     <i class="fa-solid fa-fire text-amber-500 text-xs"></i>
-                    <span class="text-xs text-slate-300 font-semibold">Streak: <span id="quiz-streak"
-                            class="text-amber-400">0</span></span>
+                    <span class="text-xs text-slate-300 font-semibold">Streak:
+                        <span id="quiz-streak" class="text-amber-400">0</span></span>
                 </div>
                 <div class="bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl flex items-center space-x-2">
                     <i class="fa-solid fa-trophy text-yellow-400 text-xs"></i>
-                    <span class="text-xs text-slate-300 font-semibold">Score: <span id="quiz-score"
-                            class="text-white">0/0</span></span>
+                    <span class="text-xs text-slate-300 font-semibold">Score:
+                        <span id="quiz-score" class="text-white">0/0</span></span>
                 </div>
             </div>
 
@@ -255,7 +255,8 @@
                         <i class="fa-solid fa-volume-high text-sm"></i>
                     </button>
                 </div>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Translate this
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Translate
+                    this
                     word</span>
                 <h3 id="quiz-question" class="text-2xl font-extrabold text-white tracking-tight break-words">Word</h3>
             </div>
@@ -287,7 +288,9 @@
                 </button>
             </div>
 
-            <p class="text-xs text-slate-400 mb-3 text-center">Tap an English word and its Russian match to pair them
+            <p class="text-xs text-slate-400 mb-3 text-center">Tap an
+                English word
+                and its Russian match to pair them
                 up!</p>
 
             <!-- Touch-Friendly Grid (2 columns for phones) -->
@@ -302,8 +305,11 @@
                     class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fa-solid fa-check text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-emerald-100">Round Complete!</h3>
-                <p class="text-xs text-emerald-300/80 mt-1 mb-4">You matched all word pairs in this round.</p>
+                <h3 class="text-xl font-bold text-emerald-100">Round
+                    Complete!</h3>
+                <p class="text-xs text-emerald-300/80 mt-1 mb-4">You matched
+                    all word
+                    pairs in this round.</p>
                 <button onclick="app.resetMatchingGame()"
                     class="w-full min-h-[50px] bg-emerald-600 text-white font-bold rounded-xl active-tap shadow-lg shadow-emerald-600/30">
                     Play Next Round
@@ -337,12 +343,15 @@
             class="w-full max-w-md max-h-[92vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-t-3xl p-5 safe-bottom-padding">
             <div id="admin-gate">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-lg font-extrabold text-white">Lesson manager</h2>
+                    <h2 class="text-lg font-extrabold text-white">Lesson
+                        manager</h2>
                     <button onclick="app.closeAdmin()"
                         class="w-10 h-10 rounded-lg bg-slate-800 text-slate-400 active-tap"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
-                <p class="text-xs text-slate-400 mb-3">Enter the passcode to add or edit lessons.</p>
+                <p class="text-xs text-slate-400 mb-3">Enter the passcode to
+                    add or
+                    edit lessons.</p>
                 <input type="password" id="admin-pass" autocomplete="off" placeholder="Passcode"
                     onkeydown="if(event.key==='Enter')app.submitPasscode()"
                     class="w-full bg-slate-800 text-sm text-slate-200 placeholder-slate-500 px-3.5 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 min-h-[48px]">
@@ -354,7 +363,9 @@
 
             <div id="admin-manage" class="hidden">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-lg font-extrabold text-white">Add / update lesson</h2>
+                    <h2 class="text-lg font-extrabold text-white">Add /
+                        update
+                        lesson</h2>
                     <div class="flex space-x-2">
                         <button onclick="app.lockAdmin()"
                             class="h-10 px-3 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold active-tap"><i
@@ -368,7 +379,9 @@
                     class="w-full bg-slate-800 text-sm text-slate-200 placeholder-slate-500 px-3.5 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 min-h-[48px] mb-2">
                 <label
                     class="w-full min-h-[48px] rounded-xl font-bold flex items-center justify-center space-x-2 active-tap bg-slate-800 border border-slate-700 text-slate-200 text-sm mb-2 cursor-pointer">
-                    <i class="fa-solid fa-file-arrow-up"></i><span>Choose file (.csv .tsv .txt .json)</span>
+                    <i class="fa-solid fa-file-arrow-up"></i><span>Choose
+                        file (.csv
+                        .tsv .txt .json)</span>
                     <input type="file" accept=".csv,.tsv,.txt,.json" class="hidden" onchange="app.handleFile(this)">
                 </label>
                 <textarea id="admin-text" rows="7" oninput="app.onAdminInput()"
@@ -378,12 +391,18 @@
                 <p id="admin-msg" class="text-xs mt-1 min-h-[16px]"></p>
                 <button onclick="app.saveLesson()"
                     class="w-full min-h-[48px] rounded-xl font-bold flex items-center justify-center space-x-2 active-tap bg-emerald-600 text-white mt-2 shadow-lg shadow-emerald-600/30"><i
-                        class="fa-solid fa-floppy-disk"></i><span>Save lesson</span></button>
+                        class="fa-solid fa-floppy-disk"></i><span>Save
+                        lesson</span></button>
 
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-6 mb-2">Uploaded lessons</h3>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-6 mb-2">Uploaded
+                    lessons</h3>
                 <div id="admin-list" class="space-y-2"></div>
-                <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">Saved in this browser only. To share a lesson
-                    with everyone, download its JSON and add it to <code>BUILT_IN_LESSONS</code> in the HTML file.</p>
+                <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">Saved
+                    in
+                    this browser only. To share a lesson
+                    with everyone, download its JSON and add it to
+                    <code>BUILT_IN_LESSONS</code> in the HTML file.
+                </p>
             </div>
         </div>
     </div>
@@ -418,45 +437,160 @@
     <script>
         // Full dataset of 38 vocabulary words categorized logically
         const lesson7A = [
-            // Shops & Places
-            { id: 1, en: "baker's", ru: "пекарня", cat: "Shops & Places" },
-            { id: 2, en: "bank", ru: "банк", cat: "Shops & Places" },
-            { id: 3, en: "butcher's", ru: "мясная лавка", cat: "Shops & Places" },
-            { id: 4, en: "charity shop", ru: "благотворительный магазин", cat: "Shops & Places" },
-            { id: 5, en: "chemist's", ru: "аптека", cat: "Shops & Places" },
-            { id: 6, en: "coffee shop", ru: "кофейня", cat: "Shops & Places" },
-            { id: 7, en: "clothes shop", ru: "магазин одежды", cat: "Shops & Places" },
-            { id: 8, en: "cosmetics store", ru: "парфюмерия, магазин косметики", cat: "Shops & Places" },
-            { id: 9, en: "deli", ru: "небольшая закусочная при гастрономе деликатесов", cat: "Shops & Places" },
-            { id: 10, en: "delicatessen", ru: "деликатесы", cat: "Shops & Places" },
-            { id: 11, en: "DIY store", ru: "магазин \"сделай сам\"", cat: "Shops & Places" },
-            { id: 12, en: "estate agent", ru: "агент по недвижимости", cat: "Shops & Places" },
-            { id: 13, en: "florist's", ru: "цветочный магазин", cat: "Shops & Places" },
-            { id: 14, en: "garden centre", ru: "садовый центр", cat: "Shops & Places" },
-            { id: 15, en: "greengrocer's", ru: "овощной магазин", cat: "Shops & Places" },
-            { id: 16, en: "hairdresser's", ru: "парикмахерская", cat: "Shops & Places" },
-            { id: 17, en: "jeweller's", ru: "ювелирный магазин", cat: "Shops & Places" },
-            { id: 18, en: "launderette", ru: "прачечная", cat: "Shops & Places" },
-            { id: 19, en: "newsagent's", ru: "газетный киоск", cat: "Shops & Places" },
-            { id: 20, en: "optician's", ru: "магазин оптики", cat: "Shops & Places" },
-            { id: 21, en: "post office", ru: "почта", cat: "Shops & Places" },
-            { id: 22, en: "shoe shop", ru: "обувной", cat: "Shops & Places" },
-            { id: 23, en: "stationer's", ru: "магазин канцтоваров", cat: "Shops & Places" },
-            { id: 24, en: "takeaway", ru: "на вынос", cat: "Shops & Places" },
-            { id: 25, en: "bargain", ru: "выгодная покупка", cat: "Shopping Terms" },
-            { id: 26, en: "coupon", ru: "купон", cat: "Shopping Terms" },
-            { id: 27, en: "discount", ru: "скидка", cat: "Shopping Terms" },
-            { id: 28, en: "discount code", ru: "промокод", cat: "Shopping Terms" },
-            { id: 29, en: "receipt", ru: "чек, квитанция", cat: "Shopping Terms" },
-            { id: 30, en: "sale", ru: "распродажа", cat: "Shopping Terms" },
-            { id: 31, en: "special offer", ru: "специальное предложение", cat: "Shopping Terms" },
-            { id: 32, en: "price tag", ru: "ценник", cat: "Shopping Terms" },
-            { id: 33, en: "essentials", ru: "предметы первой необходимости", cat: "Shopping Terms" },
-            { id: 34, en: "orchid", ru: "орхидея", cat: "Other Words" },
-            { id: 35, en: "crafty", ru: "хитрый, коварный", cat: "Other Words" },
-            { id: 36, en: "have/get a haircut", ru: "сделать стрижку", cat: "Other Words" },
-            { id: 37, en: "swap", ru: "обмениваться", cat: "Other Words" },
-            { id: 38, en: "equal", ru: "равный", cat: "Other Words" }
+            { id: 1, en: "baker's", ru: "пекарня", cat: "Nouns" },
+            { id: 2, en: "bank", ru: "банк", cat: "Nouns" },
+            { id: 3, en: "butcher's", ru: "мясная лавка", cat: "Nouns" },
+            { id: 4, en: "charity shop", ru: "благотворительный магазин", cat: "Nouns" },
+            { id: 5, en: "chemist's", ru: "аптека", cat: "Nouns" },
+            { id: 6, en: "coffee shop", ru: "кофейня", cat: "Nouns" },
+            { id: 7, en: "clothes shop", ru: "магазин одежды", cat: "Nouns" },
+            { id: 8, en: "cosmetics store", ru: "парфюмерия, магазин косметики", cat: "Nouns" },
+            { id: 9, en: "deli", ru: "небольшая закусочная при гастрономе деликатесов", cat: "Nouns" },
+            { id: 10, en: "delicatessen", ru: "деликатесы", cat: "Nouns" },
+            { id: 11, en: "DIY store", ru: "магазин \"сделай сам\"", cat: "Nouns" },
+            { id: 12, en: "estate agent", ru: "агент по недвижимости", cat: "Nouns" },
+            { id: 13, en: "florist's", ru: "цветочный магазин", cat: "Nouns" },
+            { id: 14, en: "garden centre", ru: "садовый центр", cat: "Nouns" },
+            { id: 15, en: "greengrocer's", ru: "овощной магазин", cat: "Nouns" },
+            { id: 16, en: "hairdresser's", ru: "парикмахерская", cat: "Nouns" },
+            { id: 17, en: "jeweller's", ru: "ювелирный магазин", cat: "Nouns" },
+            { id: 18, en: "launderette", ru: "прачечная", cat: "Nouns" },
+            { id: 19, en: "newsagent's", ru: "газетный киоск", cat: "Nouns" },
+            { id: 20, en: "optician's", ru: "магазин оптики", cat: "Nouns" },
+            { id: 21, en: "post office", ru: "почта", cat: "Nouns" },
+            { id: 22, en: "shoe shop", ru: "обувной", cat: "Nouns" },
+            { id: 23, en: "stationer's", ru: "магазин канцтоваров", cat: "Nouns" },
+            { id: 24, en: "takeaway", ru: "на вынос", cat: "Nouns" },
+            { id: 25, en: "bargain", ru: "выгодная покупка", cat: "Nouns" },
+            { id: 26, en: "coupon", ru: "купон", cat: "Nouns" },
+            { id: 27, en: "discount", ru: "скидка", cat: "Nouns" },
+            { id: 28, en: "discount code", ru: "промокод", cat: "Collocations" },
+            { id: 29, en: "receipt", ru: "чек, квитанция", cat: "Nouns" },
+            { id: 30, en: "sale", ru: "распродажа", cat: "Nouns" },
+            { id: 31, en: "special offer", ru: "специальное предложение", cat: "Collocations" },
+            { id: 32, en: "price tag", ru: "ценник", cat: "Collocations" },
+            { id: 33, en: "essentials", ru: "предметы первой необходимости", cat: "Nouns" },
+            { id: 34, en: "orchid", ru: "орхидея", cat: "Nouns" },
+            { id: 35, en: "crafty", ru: "хитрый, коварный", cat: "Adjectives" },
+            { id: 36, en: "have/get a haircut", ru: "сделать стрижку", cat: "Collocations" },
+            { id: 37, en: "swap", ru: "обмениваться", cat: "Actions" },
+            { id: 38, en: "equal", ru: "равный", cat: "Adjectives" },
+        ];
+
+        const lesson7B = [
+            { id: 39, en: "aid", ru: "помощь, поддержка", cat: "Nouns" },
+            { id: 40, en: "to praise", ru: "хвалить", cat: "Actions" },
+            { id: 41, en: "dough", ru: "тесто", cat: "Nouns" },
+            { id: 42, en: "to treat teeth", ru: "лечить зубы", cat: "Collocations" },
+            { id: 43, en: "essentials", ru: "предметы первой необходимости, основы", cat: "Nouns" },
+            { id: 44, en: "poor", ru: "бедный, несчастный", cat: "Adjectives" },
+            { id: 45, en: "equal", ru: "равный, одинаковый", cat: "Adjectives" },
+            { id: 46, en: "equality", ru: "равенство, равноправие", cat: "Nouns" },
+            { id: 47, en: "charity shop", ru: "благотворительный магазин", cat: "Nouns" },
+            { id: 48, en: "carefully", ru: "осторожно, внимательно", cat: "Adverbs" },
+            { id: 49, en: "announcement", ru: "объявление", cat: "Nouns" },
+            { id: 50, en: "to stay ahead", ru: "быть впереди", cat: "Collocations" },
+            { id: 51, en: "condition", ru: "условие, состояние", cat: "Nouns" },
+            { id: 52, en: "to earn money", ru: "зарабатывать деньги", cat: "Collocations" },
+        ];
+
+        const lesson7C = [
+            { id: 53, en: "to buy", ru: "покупать, купить", cat: "Actions" },
+            { id: 54, en: "to afford", ru: "позволить себе, иметь возможность", cat: "Actions" },
+            { id: 55, en: "to borrow", ru: "одолжить, взять взаймы", cat: "Actions" },
+            { id: 56, en: "to charge", ru: "запрашивать плату", cat: "Actions" },
+            { id: 57, en: "to get", ru: "получить", cat: "Actions" },
+            { id: 58, en: "to give", ru: "дать", cat: "Actions" },
+            { id: 59, en: "to lend", ru: "одалживать", cat: "Actions" },
+            { id: 60, en: "to lose", ru: "потерять", cat: "Actions" },
+            { id: 61, en: "to owe", ru: "задолжать", cat: "Actions" },
+            { id: 62, en: "to pay for something", ru: "платить за что-то", cat: "Collocations" },
+            { id: 63, en: "to run out", ru: "закончиться, иссякнуть", cat: "Collocations" },
+            { id: 64, en: "to save", ru: "спасать", cat: "Actions" },
+            { id: 65, en: "to save up", ru: "откладывать деньги", cat: "Collocations" },
+            { id: 66, en: "to sell", ru: "продавать", cat: "Actions" },
+            { id: 67, en: "to spend", ru: "тратить", cat: "Actions" },
+            { id: 68, en: "to waste", ru: "тратить, расточать", cat: "Actions" },
+            { id: 69, en: "cost", ru: "стоимость", cat: "Nouns" },
+            { id: 70, en: "money", ru: "деньги", cat: "Nouns" },
+            { id: 71, en: "refund", ru: "возврат", cat: "Nouns" },
+            { id: 72, en: "to be short of something", ru: "испытывать нехватку чего-то", cat: "Collocations" },
+        ];
+
+        const lesson7D = [
+            { id: 73, en: "bury", ru: "хоронить, закапывать", cat: "Actions" },
+            { id: 74, en: "treasure", ru: "сокровище", cat: "Nouns" },
+            { id: 75, en: "buried treasure", ru: "клад", cat: "Collocations" },
+            { id: 76, en: "unfortunately", ru: "к сожалению", cat: "Adverbs" },
+            { id: 77, en: "search", ru: "искать, обыскивать", cat: "Actions" },
+            { id: 78, en: "rubbish dump", ru: "свалка", cat: "Nouns" },
+            { id: 79, en: "search an enormous rubbish dump", ru: "копаться в огромной свалке", cat: "Collocations" },
+            { id: 80, en: "computer hard drive", ru: "жесткий диск от компьютера", cat: "Nouns" },
+            { id: 81, en: "virtual currency", ru: "виртуальная валюта", cat: "Collocations" },
+            { id: 82, en: "bitcoin", ru: "биткоин (цифровая валюта)", cat: "Nouns" },
+            { id: 83, en: "value had risen to over $1000", ru: "стоимость выросла до 1000 долларов", cat: "Collocations" },
+            { id: 84, en: "increase", ru: "увеличивать(ся), возрастать", cat: "Actions" },
+            { id: 85, en: "The value of his collection had increased.", ru: "Ценность его коллекции возросла.", cat: "Collocations" },
+            { id: 86, en: "take the computer apart", ru: "разобрать компьютер по частям", cat: "Collocations" },
+            { id: 87, en: "spill a drink", ru: "пролить напиток", cat: "Collocations" },
+            { id: 88, en: "throw away", ru: "выбрасывать", cat: "Collocations" },
+            { id: 89, en: "it is worth a fortune", ru: "это стоит целое состояние", cat: "Collocations" },
+        ];
+
+        const lesson7E = [
+            { id: 90, en: "avoidance", ru: "избегание, уклонение", cat: "Nouns" },
+            { id: 91, en: "to avoid", ru: "избегать, уклоняться", cat: "Actions" },
+            { id: 92, en: "to hate", ru: "ненавидеть", cat: "Actions" },
+            { id: 93, en: "to refuse", ru: "отказываться", cat: "Actions" },
+            { id: 94, en: "to admit", ru: "признавать", cat: "Actions" },
+            { id: 95, en: "to agree", ru: "соглашаться", cat: "Actions" },
+            { id: 96, en: "to enjoy", ru: "наслаждаться, получать удовольствие", cat: "Actions" },
+            { id: 97, en: "to mind", ru: "возражать, заботиться", cat: "Actions" },
+            { id: 98, en: "to offer", ru: "предлагать", cat: "Actions" },
+            { id: 99, en: "to promise", ru: "обещать", cat: "Actions" },
+        ];
+
+        const lesson7F = [
+            { id: 100, en: "contract", ru: "контракт, договор", cat: "Nouns" },
+            { id: 101, en: "income", ru: "доход", cat: "Nouns" },
+            { id: 102, en: "salary", ru: "зарплата", cat: "Nouns" },
+            { id: 103, en: "investor", ru: "вкладчик капитала, инвестор", cat: "Nouns" },
+            { id: 104, en: "funding", ru: "финансирование", cat: "Nouns" },
+            { id: 105, en: "entrepreneur", ru: "предприниматель", cat: "Nouns" },
+            { id: 106, en: "profit", ru: "прибыль", cat: "Nouns" },
+            { id: 107, en: "chief executive officer", ru: "генеральный директор", cat: "Nouns" },
+        ];
+
+        const lesson7G = [
+            { id: 108, en: "corridor", ru: "коридор", cat: "Nouns" },
+            { id: 109, en: "gym", ru: "спортзал", cat: "Nouns" },
+            { id: 110, en: "head teacher", ru: "директор школы, завуч", cat: "Nouns" },
+            { id: 111, en: "office", ru: "офис, кабинет", cat: "Nouns" },
+            { id: 112, en: "language", ru: "язык", cat: "Nouns" },
+            { id: 113, en: "reception", ru: "стойка регистрации, приемная", cat: "Nouns" },
+            { id: 114, en: "science lab", ru: "научная лаборатория", cat: "Nouns" },
+            { id: 115, en: "stair", ru: "ступенька, лестница", cat: "Nouns" },
+            { id: 116, en: "toilet", ru: "туалет, уборная", cat: "Nouns" },
+            { id: 117, en: "school", ru: "школа", cat: "Nouns" },
+            { id: 118, en: "canteen", ru: "столовая", cat: "Nouns" },
+            { id: 119, en: "classroom", ru: "классный кабинет", cat: "Nouns" },
+            { id: 120, en: "hall", ru: "зал, коридор, холл", cat: "Nouns" },
+            { id: 121, en: "library", ru: "библиотека", cat: "Nouns" },
+            { id: 122, en: "playground", ru: "игровая площадка", cat: "Nouns" },
+            { id: 123, en: "playing field", ru: "спортивное поле", cat: "Nouns" },
+            { id: 124, en: "staff", ru: "персонал, сотрудники", cat: "Nouns" },
+            { id: 125, en: "room", ru: "комната, помещение", cat: "Nouns" },
+            { id: 126, en: "storeroom", ru: "кладовая, складское помещение", cat: "Nouns" },
+            { id: 127, en: "laboratory", ru: "лаборатория", cat: "Nouns" },
+        ];
+
+        const lesson7H = [
+            { id: 128, en: "for", ru: "для, ради", cat: "Prepositions" },
+            { id: 129, en: "from", ru: "из, от, с", cat: "Prepositions" },
+            { id: 130, en: "in", ru: "через, в", cat: "Prepositions" },
+            { id: 131, en: "off", ru: "с, со, от", cat: "Prepositions" },
+            { id: 132, en: "on", ru: "в (день/дату), на", cat: "Prepositions" },
+            { id: 133, en: "to", ru: "в, к, на", cat: "Prepositions" },
         ];
 
         // ---- Lessons ----------------------------------------------------
@@ -469,7 +603,14 @@
 
         // Add permanent lessons here: { id: "unique-id", title: "Lesson 2", words: [{ en, ru, cat }] }
         const BUILT_IN_LESSONS = [
-            { id: "shopping", title: "7A Shopping & Words", words: lesson7A }
+            { id: "Worth it?", title: "7A Worth it?", words: lesson7A },
+            { id: "Second conditional", title: "7B Second conditional", words: lesson7B },
+            { id: "Honesty pays", title: "7C Honesty pays", words: lesson7C },
+            { id: "Past Perfect", title: "7D Past Perfect", words: lesson7D },
+            { id: "Verb + infinitive or -ing form", title: "7E Verb + infinitive or -ing form", words: lesson7E },
+            { id: "Aaron Levie", title: "7F Aaron Levie", words: lesson7F },
+            { id: "Photo comparison and presentation", title: "7G Photo comparison and presentation", words: lesson7G },
+            { id: "An opinion essay", title: "7H An opinion essay", words: lesson7H },
         ];
 
         let VOCAB_DATA = []; // words of the active lesson (set by VocabApp.applyLesson)
@@ -857,9 +998,9 @@
                     // First card selected
                     this.selectedMatchCard = cardBtn;
                     cardBtn.classList.add('border-blue-500', 'bg-blue-950/50', 'text-blue-200');
-                    if (cardBtn.dataset.lang === 'en') {
-                        this.speak(cardBtn.innerText);
-                    }
+                    // if (cardBtn.dataset.lang === 'en') {
+                    //     this.speak(cardBtn.innerText);
+                    // }
                 } else {
                     // Second card selected
                     const prevCard = this.selectedMatchCard;
